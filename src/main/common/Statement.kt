@@ -10,4 +10,5 @@ sealed class Statement{
        class Ingredient(val name: Token, val kind: Token, val initializer: Expression?): Statement()
        class Stir(val condition: Expression, val body: Statement): Statement()
        class GiveUp(): Statement()
+       class Favourite(val condition: Expression, val cases: Statement): Statement()
    }
