@@ -12,4 +12,5 @@ fun shiftLeft(i: Int) : Int{
 fun main(args: Array<String>) {
     println("Hello World!")
     println("Program arguments: ${args.joinToString()}")
+    val parser: Parser = Parser;
 }
