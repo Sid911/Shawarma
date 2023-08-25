@@ -1,8 +1,3 @@
-/**
- * @author Shikhar
- * @property line Represents line number for the token
- * @property start Represents charter index till the start of the document
- */
 data class Token(
     val type: TokenType,
     val lexeme: String,
@@ -13,7 +8,7 @@ data class Token(
 )
 
 /**
- * Token Type for shwarma language
+ * Token Type for shawarma language
  */
 enum class TokenType {
     // Single-character tokens
@@ -21,16 +16,16 @@ enum class TokenType {
     COMMA, DOT, COLON ,SEMICOLON, PLUS, MINUS, STAR, SLASH,
 
     // One or two character tokens
-    BANG, BANG_EQUAL, EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
+    EQUAL, EQUAL_EQUAL,NOT_EQUAL,
+    GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,OR,
 
     // Literals
     IDENTIFIER, STRING, NUMBER, DATATYPE,
 
     // Keywords
-    INGREDIENT, FREEZE, RECIPE, PLATE, TASTE, ELSESPICE, SWALLOW,
+    INGREDIENT, FROZEN, RECIPE,BILL, TASTE, ELSESPICE, SWALLOW,
     STIR, BAKE, GIVEUP, NEXTPLS, FAVORITE, CASE, OTHERWISE,
-    SERVE, ORDER, MENU, FLAVOR, TRUE, FALSE, COOK, POTATO,
+    SERVE, ORDER, MENU, FLAVOR,TRUE, FALSE, COOK, POTATO,FOR,ME,DIGEST,
 
     // Special tokens
     EOF, EOL
