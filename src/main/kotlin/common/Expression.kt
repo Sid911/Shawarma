@@ -6,7 +6,7 @@
        class Grouping(val expr: Expression): Expression()
        class Literal(val value: Any?): Expression()
        class Logical(val left: Expression, val operator: Token, val right: Expression): Expression()
-       class Unary(val op: token, val expr: Expression): Expression()
+       class Unary(val op: Token, val expr: Expression): Expression()
        class Variable(val name: Token): Expression()
        class Set(val obj: Expression, val name: Token, val value: Expression): Expression()
        class Me(val keyword: Token): Expression()
