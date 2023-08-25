@@ -1,9 +1,14 @@
+package parser
+
+import ErrorReporterInterface
+import Expression
+import Statement
 import common.Token
 import common.TokenType
 import java.lang.RuntimeException
 import java.util.ArrayDeque
 
- public class Parser(
+ class Parser(
      private val tokens: ArrayDeque<Token>,
      private val errorReporter: ErrorReporterInterface
  ){
@@ -32,7 +37,7 @@ import java.util.ArrayDeque
          }
      }
 
-     private fun menuDeclaration(): Statement.Menu{
+     private fun menuDeclaration(): Statement.Menu {
          val name = consume(TokenType.IDENTIFIER, "Expect menu name")
          consume(TokenType.LEFT_BRACE, "Expect '{' before menu body")
 
@@ -41,10 +46,10 @@ import java.util.ArrayDeque
              fields.add(Receipe("method"))
          }
          consume(TokenType.RIGHT_BRACE, "Expect '}' after menu body")
-         return Statement.Menu(name,fields)
+         return Statement.Menu(name, fields)
      }
 
-     private fun Receipe(kind: String): Statement.Receipe{
+     private fun Receipe(kind: String): Statement.Receipe {
          val name = consume(TokenType.IDENTIFIER, "Expect $kind name.")
          consume(TokenType.LEFT_PAREN, "Expect '(' after $kind name.")
          val parameters = mutableListOf<Token>()
@@ -59,10 +64,10 @@ import java.util.ArrayDeque
          consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.")
          consume(TokenType.LEFT_BRACE, "Expext '{' before $kind body.")
          val body = block()
-         return Statement.Receipe(name,parameters,body)
+         return Statement.Receipe(name, parameters, body)
      }
 
-     private fun Ingredient(): Statement{
+     private fun Ingredient(): Statement {
          val name = consume(TokenType.IDENTIFIER, "Expect ingredient name")
          val isFrozen = match(TokenType.FREEZE)
          consume(TokenType.COLON, "Expect ':' after ingredient name")
@@ -70,15 +75,15 @@ import java.util.ArrayDeque
          if (isFrozen){
              val initialization = expression()
              consume(TokenType.SEMI_COLON, "Expect ';' after ingredient declaration")
-             return Statement.Ingredient(name,kind,initialization)
+             return Statement.Ingredient(name, kind, initialization)
          }
          else{
              consume(TokenType.SEMICOLON, "Expect ';' after ingredient declaration")
-             return Statement.Ingredient(name,kind,null)
+             return Statement.Ingredient(name, kind, null)
          }
      }
 
-     private fun statement(): Statement{
+     private fun statement(): Statement {
          return when{
              match(TokenType.BAKE) -> bakestatement()
              match(TokenType.TASTE) -> tastestatement()
@@ -92,14 +97,14 @@ import java.util.ArrayDeque
          }
      }
 
-     private fun billstatement(): Statement{
+     private fun billstatement(): Statement {
          val keyword = previous()
          val value = if (!check(TokenType.SEMICOLON)) expression() else null
          consume(TokenType.SEMICOLON, "Expect ';' after return value")
          return Statement.Bill(keyword, value)
      }
 
-     private fun bakestatement(): Statement{
+     private fun bakestatement(): Statement {
          consume(TokenType.LEFT_PAREN, "Expect '(' after bake")
          val initializer = when {
              match(TokenType.SEMICOLON) -> null
@@ -110,13 +115,13 @@ import java.util.ArrayDeque
          consume(TokenType.SEMICOLON, "Expect ';' after loop condition")
          val increment = if (!check(TokenType.RIGHT_PAREN)) expression() else null
          var body = statement()
-         increment?.let {body = Statement.Block(listOf(body,Statement.Expression(it))) }
+         increment?.let {body = Statement.Block(listOf(body, Statement.Expression(it))) }
          body = Statement.Stir(condition, body)
-         initializer?.let { body = Statement.Block(listOf(it, body))}
+         initializer?.let { body = Statement.Block(listOf(it, body)) }
          return body
      }
 
-     private fun favouritestatement(): Statement{
+     private fun favouritestatement(): Statement {
          val condition = expression()
          consume(TokenType.LEFT_BRACE, "Expect '{' before favourite case")
          val cases = mutableListOf<Pair<Expression, List<Statement>>>()
@@ -131,10 +136,10 @@ import java.util.ArrayDeque
              }
          }
          consume(TokenType.RIGHT_BRACE, "Expect '}' after favourite cases")
-         return Statement.Favourite(condition,cases)
+         return Statement.Favourite(condition, cases)
      }
 
-     private fun stirstatement(): Statement{
+     private fun stirstatement(): Statement {
          consume(TokenType.LEFT_PAREN, "Expect '(' after stir ")
          val condition = expression()
          val body = statement()
@@ -150,7 +155,7 @@ import java.util.ArrayDeque
          return statements
      }
 
-     private fun tastestatement(): Statement{
+     private fun tastestatement(): Statement {
          consume(TokenType.LEFT_PAREN, "Expect '(' after taste")
          val condition = expression()
          consume(TokenType.RIGHT_PAREN, "Expect ')' after taste condition")
@@ -169,23 +174,23 @@ import java.util.ArrayDeque
          return Statement.Taste(condition, thenBranch, elseifBranches, elseBranch)
      }
 
-     private fun expressionstatement(): Statement{
+     private fun expressionstatement(): Statement {
          val expr = expression()
          consume(TokenType.SEMICOLON, "Expect ';' after expression.")
          return Statement.Expression(expr)
      }
 
-     private fun servestatement(): Statement{
+     private fun servestatement(): Statement {
          val value = expression()
          consume(TokenType.SEMICOLON, "Expect ';' after value.")
          return Statement.Serve(value)
      }
 
-     private fun expression(): Expression{
+     private fun expression(): Expression {
          return assignment()
      }
 
-     private fun assignment(): Expression{
+     private fun assignment(): Expression {
          val expr = or()
          if (match(TokenType.EQUAL)) {
              val equals = previous()
@@ -193,7 +198,7 @@ import java.util.ArrayDeque
              when (expr) {
                  is Expression.Variable -> {
                      val name = expr.name
-                     return Expression.Assign(name,value)
+                     return Expression.Assign(name, value)
                  }
                  is Expression.Get -> {
                      return Expression.Set(expr.obj, expr.name, value)
@@ -205,32 +210,32 @@ import java.util.ArrayDeque
          return expr
      }
 
-     private fun or(): Expression{
+     private fun or(): Expression {
          val expr = and()
          while (match(TokenType.OR)) {
              val operator = previous()
              val right = and()
-             expr = Expression.Logical(expr,operator,right)
+             expr = Expression.Logical(expr, operator, right)
          }
          return expr
      }
 
-     private fun and(): Expression{
+     private fun and(): Expression {
          var expr = equality()
          while (match(TokenType.AND)){
              val operator = previous()
              val right = equality()
-             expr = Expression.Logical(expr,operator,right)
+             expr = Expression.Logical(expr, operator, right)
          }
          return expr
      }
 
-     private fun equality(): Expression{
+     private fun equality(): Expression {
          var expr = comparison()
          while (match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)){
              val operator = previous()
              val right = comparison()
-             expr = Expression.Binary(expr,operator,right)
+             expr = Expression.Binary(expr, operator, right)
          }
          return expr
      }
@@ -273,7 +278,7 @@ import java.util.ArrayDeque
          }
      }
 
-     private fun comparison(): Expression{
+     private fun comparison(): Expression {
          var expr = term()
          while (match(
                  TokenType.GREATER,
@@ -284,48 +289,48 @@ import java.util.ArrayDeque
          {
              val operator = previous()
              val right = term()
-             expr = Expression.Binary(expr,operator,right)
+             expr = Expression.Binary(expr, operator, right)
          }
          return expr
      }
 
-     private fun term(): Expression{
+     private fun term(): Expression {
          var expr = factor()
          while (match(TokenType.PLUS, TokenType.MINUS)){
              val operator = previous()
              val right = factor()
-             expr = Expression.Binary(expr,operator,right)
+             expr = Expression.Binary(expr, operator, right)
          }
          return expr
      }
 
-     private fun factor(): Expression{
+     private fun factor(): Expression {
          var expr = unary()
          while (match(TokenType.SLASH, TokenType.STAR)){
              val operator = previous()
              val right: Expression = unary()
-             expr = Expression.Binary(expr,operator,right)
+             expr = Expression.Binary(expr, operator, right)
          }
          return expr
      }
 
-     private fun unary(): Expression{
+     private fun unary(): Expression {
          while (match(TokenType.BANG, TokenType.MINUS)){
              val operator = previous()
              val right = unary()
-             return Expression.Unary(operator,right)
+             return Expression.Unary(operator, right)
          }
          return call()
      }
 
-     private fun call(): Expression{
+     private fun call(): Expression {
          var expr = primary()
          while (true){
              expr = if (match(TokenType.LEFT_PARAN)){
                  finishcall(expr)
              } else if (match(TokenType.DOT)){
                  val name = consume(TokenType.IDENTIFIER, "Expect prperty name after '.' ")
-                 Expression.Get(expr,name)
+                 Expression.Get(expr, name)
              } else{
                  break
              }
@@ -333,7 +338,7 @@ import java.util.ArrayDeque
          return expr
      }
 
-     private fun finishcall(callee: Expression): Expression{
+     private fun finishcall(callee: Expression): Expression {
          val arguments = mutableListOf<Expression>()
          if (!check(TokenType.RIGHT_PAREN)) {
              do {
@@ -344,10 +349,10 @@ import java.util.ArrayDeque
              } while (match(TokenType.COMMA))
          }
          val paren = consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.")
-         return Expression.Call(callee,paren,arguments)
+         return Expression.Call(callee, paren, arguments)
      }
 
-     private fun primary(): Expression{
+     private fun primary(): Expression {
          return when{
              match(TokenType.FALSE) -> Expression.Literal(false)
              match(TokenType.TRUE) -> Expression.Literal(true)
@@ -379,7 +384,7 @@ import java.util.ArrayDeque
          return Statement.GiveUp()
      }
 
-     private fun error(token: Token, message: string): ParseError{
+     private fun error(token: Token, message: string): ParseError {
          errorReporter.error(token,message)
          return ParseError()
      }
