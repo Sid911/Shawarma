@@ -1,8 +1,3 @@
-/**
- * @author Shikhar
- * @property line Represents line number for the token
- * @property start Represents charter index till the start of the document
- */
 data class Token(
     val type: TokenType,
     val lexeme: String,
@@ -13,7 +8,7 @@ data class Token(
 )
 
 /**
- * Token Type for shwarma language
+ * Token Type for shawarma language
  */
 enum class TokenType {
     // Single-character tokens
@@ -35,26 +30,3 @@ enum class TokenType {
     // Special tokens
     EOF, EOL
 }
-ingredient [ing] // variable decleration
-frozen // non mutable
-recipe // function
-bill // return
-taste // if
-elseSpice // elseif
-swallow // else
-stir // while
-bake // for
-giveUp // break
-nextPls // continue
-favorite // switch
-case // case
-otherwise // default
-serve // println
-order // input stdin
-menu // struct
-flavor // enum
-potato // trait
-cook // implementation
-for // for in implementation cook [Trait] for [struct]
-me // Self for structs
-digest // gc the memory
