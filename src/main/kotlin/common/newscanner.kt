@@ -1,4 +1,4 @@
-class Scanner(private val sourceCode: String) {
+class Scanner2(private val sourceCode: String) {
     private var currentPos = 0
     private var currentLine = 1
     private var currentStart = 0
