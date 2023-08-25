@@ -1,3 +1,5 @@
+package common
+
 data class Token(
     val type: TokenType,
     val lexeme: String,
@@ -8,7 +10,7 @@ data class Token(
 )
 
 /**
- * Token Type for shawarma language
+ * common.Token Type for shawarma language
  */
 enum class TokenType {
     // Single-character tokens

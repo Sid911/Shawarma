@@ -1,3 +1,5 @@
+import common.Token
+
 interface ErrorReporterInterface {
     var hadError: Boolean
 

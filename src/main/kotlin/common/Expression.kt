@@ -1,4 +1,6 @@
-   sealed class Expression{
+import common.Token
+
+sealed class Expression{
        class Assign(val name: Token, val value: Expression): Expression()
        class Binary(val left: Expression, val op: Token, val right: Expression): Expression()
        class Call(val callee: Expression, val paren: Token, val arguments: List<Expression>): Expression()

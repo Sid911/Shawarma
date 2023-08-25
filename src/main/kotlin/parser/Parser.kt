@@ -1,3 +1,5 @@
+import common.Token
+import common.TokenType
 import java.lang.RuntimeException
 import java.util.ArrayDeque
 
@@ -233,7 +235,7 @@ import java.util.ArrayDeque
          return expr
      }
 
-     private fun previous(): Token{
+     private fun previous(): Token {
          return tokens[current - 1]
      }
 
@@ -247,7 +249,7 @@ import java.util.ArrayDeque
          return false
      }
 
-     private fun advance(): Token{
+     private fun advance(): Token {
          if (!isAtEnd()){
              current++
          }
@@ -364,7 +366,7 @@ import java.util.ArrayDeque
          }
      }
 
-     private fun consume(type: TokenType, message: String): Token{
+     private fun consume(type: TokenType, message: String): Token {
          if(check(type)){
              return advance()
          }
@@ -389,7 +391,7 @@ import java.util.ArrayDeque
          return peek().type === type
      }
 
-     private fun peek(): Token{
+     private fun peek(): Token {
          return tokens[current]
      }
 

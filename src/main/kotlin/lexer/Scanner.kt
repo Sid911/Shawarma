@@ -1,4 +1,9 @@
-import TokenType.*
+package lexer
+
+import ErrorReporterInterface
+import common.Token
+import common.TokenType
+import common.TokenType.*
 
 
 

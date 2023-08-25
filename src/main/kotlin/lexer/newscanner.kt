@@ -1,3 +1,6 @@
+import common.Token
+import common.TokenType
+
 class Scanner2(private val sourceCode: String) {
     private var currentPos = 0
     private var currentLine = 1
